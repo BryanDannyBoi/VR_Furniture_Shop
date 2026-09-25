@@ -41,8 +41,9 @@ public static class Step2_AddTeleportAnchors
     };
 
     // Local offset from the station origin to where the player lands.
-    // (0, 0, -1.5) = 1.5 metres in front of the cupboard doors along -Z.
-    // The cupboards face -Z, so the player needs to stand on the -Z side.
+    // (0, -0.5, -1.5) = 1.5 metres in front of the cupboard doors along -Z at Y = -0.5m
+    // so the player's eye level comfortably aligns with the cupboards.
+    private const float ANCHOR_Y_OFFSET = -0.5f;
     private const float ANCHOR_Z_OFFSET = -1.5f;
 
     // Y-rotation of the anchor: 0 degrees means the player faces +Z
@@ -90,8 +91,8 @@ public static class Step2_AddTeleportAnchors
             // Parent it to the station so it moves with it.
             anchorGO.transform.SetParent(station.transform, worldPositionStays: false);
 
-            // Position: in front of the cupboard doors along local -Z.
-            anchorGO.transform.localPosition = new Vector3(0f, 0f, ANCHOR_Z_OFFSET);
+            // Position: in front of the cupboard doors along local -Z at Y = -0.5m.
+            anchorGO.transform.localPosition = new Vector3(0f, ANCHOR_Y_OFFSET, ANCHOR_Z_OFFSET);
 
             // Rotation: face +Z so the player looks toward the cupboard doors.
             anchorGO.transform.localRotation = Quaternion.Euler(0f, ANCHOR_Y_ROT, 0f);
