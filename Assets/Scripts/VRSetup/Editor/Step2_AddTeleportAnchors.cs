@@ -116,6 +116,7 @@ public static class Step2_AddTeleportAnchors
             // ------------------------------------------------
             TeleportationAnchor anchor = anchorGO.AddComponent<TeleportationAnchor>();
             anchor.matchOrientation = MatchOrientation.TargetUpAndForward;
+            anchor.interactionLayers = 1 << 31; // Teleport layer (bit 31)
 
             Debug.Log("[Step2] TeleportAnchor created for " + stationName
                 + "  world pos ~" + anchorGO.transform.position);
