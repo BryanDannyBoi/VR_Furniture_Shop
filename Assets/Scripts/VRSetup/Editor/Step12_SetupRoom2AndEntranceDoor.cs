@@ -484,6 +484,7 @@ public static class Step12_SetupRoom2AndEntranceDoor
                 modelObj.transform.localPosition = Vector3.zero;
                 // Upright orientation facing -Z
                 modelObj.transform.localRotation = Quaternion.Euler(270f, 90f, 90f);
+                modelObj.transform.localScale = new Vector3(5f, 5f, 10f);
 
                 // Add BoxCollider for physical/ray collision
                 Renderer[] renderers = modelObj.GetComponentsInChildren<Renderer>();
@@ -560,13 +561,13 @@ public static class Step12_SetupRoom2AndEntranceDoor
         // Position on the right side of the fridge
         signGO.transform.localPosition = new Vector3(0.85f, 0.85f, -0.25f);
         signGO.transform.localRotation = Quaternion.Euler(0f, -15f, 0f);
-        signGO.transform.localScale = Vector3.one * 0.01f;
+        signGO.transform.localScale = Vector3.one * 0.001f;
 
         Canvas canvas = signGO.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
         if (mainCam != null) canvas.worldCamera = mainCam;
         RectTransform canvasRT = signGO.GetComponent<RectTransform>();
-        canvasRT.sizeDelta = new Vector2(44f, 26f);
+        canvasRT.sizeDelta = new Vector2(440f, 280f);
 
         signGO.AddComponent<GraphicRaycaster>();
         signGO.AddComponent<TrackedDeviceGraphicRaycaster>();
@@ -578,14 +579,17 @@ public static class Step12_SetupRoom2AndEntranceDoor
         GameObject headerGO = new GameObject("Sign_Header");
         headerGO.transform.SetParent(signGO.transform, false);
         RectTransform headerRT = headerGO.AddComponent<RectTransform>();
-        headerRT.anchorMin = new Vector2(0f, 0.50f);
-        headerRT.anchorMax = new Vector2(1f, 1f);
-        headerRT.offsetMin = new Vector2(2f, 2f);
-        headerRT.offsetMax = new Vector2(-2f, -2f);
+        headerRT.anchorMin = new Vector2(0.05f, 0.44f);
+        headerRT.anchorMax = new Vector2(0.95f, 0.94f);
+        headerRT.offsetMin = Vector2.zero;
+        headerRT.offsetMax = Vector2.zero;
 
         TextMeshProUGUI headerTMP = headerGO.AddComponent<TextMeshProUGUI>();
-        headerTMP.text = $"<b>{data.displayName}</b>\n<color=#81C784>${data.price:F0}</color>";
-        headerTMP.fontSize = 11f;
+        headerTMP.text = $"<b>{data.displayName}</b>\n<color=#66BB6A><size=26>${data.price:F0}</size></color>";
+        headerTMP.fontSize = 22f;
+        headerTMP.enableAutoSizing = true;
+        headerTMP.fontSizeMin = 14f;
+        headerTMP.fontSizeMax = 22f;
         headerTMP.alignment = TextAlignmentOptions.Center;
         headerTMP.color = Color.white;
         headerTMP.raycastTarget = false;
@@ -595,19 +599,19 @@ public static class Step12_SetupRoom2AndEntranceDoor
         buttonGO.transform.SetParent(signGO.transform, false);
         RectTransform buttonRT = buttonGO.AddComponent<RectTransform>();
         buttonRT.anchorMin = new Vector2(0.08f, 0.08f);
-        buttonRT.anchorMax = new Vector2(0.92f, 0.48f);
+        buttonRT.anchorMax = new Vector2(0.92f, 0.38f);
         buttonRT.offsetMin = Vector2.zero;
         buttonRT.offsetMax = Vector2.zero;
 
         Image btnImage = buttonGO.AddComponent<Image>();
-        btnImage.color = new Color(0.18f, 0.55f, 0.34f, 1f); // Forest green
+        btnImage.color = new Color(0.18f, 0.60f, 0.36f, 1f); // Vibrant emerald green
 
         Button btn = buttonGO.AddComponent<Button>();
         btn.targetGraphic = btnImage;
         ColorBlock cb = btn.colors;
         cb.normalColor = Color.white;
-        cb.highlightedColor = new Color(1.2f, 1.2f, 1.2f, 1f);
-        cb.pressedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+        cb.highlightedColor = new Color(1.15f, 1.15f, 1.15f, 1f);
+        cb.pressedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
         btn.colors = cb;
 
         // Button Text
@@ -616,13 +620,18 @@ public static class Step12_SetupRoom2AndEntranceDoor
         RectTransform btnTextRT = btnTextGO.AddComponent<RectTransform>();
         btnTextRT.anchorMin = Vector2.zero;
         btnTextRT.anchorMax = Vector2.one;
-        btnTextRT.offsetMin = Vector2.zero;
-        btnTextRT.offsetMax = Vector2.zero;
+        btnTextRT.offsetMin = new Vector2(10f, 4f);
+        btnTextRT.offsetMax = new Vector2(-10f, -4f);
 
         TextMeshProUGUI tmpText = btnTextGO.AddComponent<TextMeshProUGUI>();
         tmpText.text = "Add to Cart";
-        tmpText.fontSize = 13f;
+        tmpText.fontSize = 20f;
         tmpText.fontStyle = FontStyles.Bold;
+        tmpText.enableAutoSizing = true;
+        tmpText.fontSizeMin = 14f;
+        tmpText.fontSizeMax = 20f;
+        tmpText.textWrappingMode = TextWrappingModes.NoWrap;
+        tmpText.overflowMode = TextOverflowModes.Ellipsis;
         tmpText.alignment = TextAlignmentOptions.Center;
         tmpText.color = Color.white;
         tmpText.raycastTarget = false;

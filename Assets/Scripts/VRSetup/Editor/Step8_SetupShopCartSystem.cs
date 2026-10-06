@@ -53,9 +53,9 @@ public static class Step8_SetupShopCartSystem
     // Position: +1.05m to the right, 0.85m height (chest level), -0.30m forward (angled toward player)
     private static readonly Vector3 SIGN_LOCAL_POS = new Vector3(1.05f, 0.85f, -0.30f);
     private static readonly Quaternion SIGN_LOCAL_ROT = Quaternion.Euler(0f, -15f, 0f);
-    private const float SIGN_WIDTH = 44f;
-    private const float SIGN_HEIGHT = 26f;
-    private const float SIGN_SCALE = 0.01f;
+    private const float SIGN_WIDTH = 440f;
+    private const float SIGN_HEIGHT = 280f;
+    private const float SIGN_SCALE = 0.001f;
 
     // Cart Summary Canvas placement beside the entrance (Option A)
     private static readonly Vector3 SUMMARY_POS = new Vector3(-1.65f, 1.30f, -2.40f);
@@ -198,15 +198,18 @@ public static class Step8_SetupShopCartSystem
 
             RectTransform headerRT = headerGO.GetComponent<RectTransform>();
             if (headerRT == null) headerRT = headerGO.AddComponent<RectTransform>();
-            headerRT.anchorMin = new Vector2(0f, 0.50f);
-            headerRT.anchorMax = new Vector2(1f, 1f);
-            headerRT.offsetMin = new Vector2(2f, 2f);
-            headerRT.offsetMax = new Vector2(-2f, -2f);
+            headerRT.anchorMin = new Vector2(0.05f, 0.44f);
+            headerRT.anchorMax = new Vector2(0.95f, 0.94f);
+            headerRT.offsetMin = Vector2.zero;
+            headerRT.offsetMax = Vector2.zero;
 
             TextMeshProUGUI headerTMP = headerGO.GetComponent<TextMeshProUGUI>();
             if (headerTMP == null) headerTMP = headerGO.AddComponent<TextMeshProUGUI>();
-            headerTMP.text = $"<b>{data.itemName}</b>\n<color=#81C784>${data.price:F0}</color>";
-            headerTMP.fontSize = 11f;
+            headerTMP.text = $"<b>{data.itemName}</b>\n<color=#66BB6A><size=26>${data.price:F0}</size></color>";
+            headerTMP.fontSize = 22f;
+            headerTMP.enableAutoSizing = true;
+            headerTMP.fontSizeMin = 14f;
+            headerTMP.fontSizeMax = 22f;
             headerTMP.alignment = TextAlignmentOptions.Center;
             headerTMP.color = Color.white;
             headerTMP.raycastTarget = false;
@@ -228,13 +231,13 @@ public static class Step8_SetupShopCartSystem
             RectTransform buttonRT = buttonGO.GetComponent<RectTransform>();
             if (buttonRT == null) buttonRT = buttonGO.AddComponent<RectTransform>();
             buttonRT.anchorMin = new Vector2(0.08f, 0.08f);
-            buttonRT.anchorMax = new Vector2(0.92f, 0.48f);
+            buttonRT.anchorMax = new Vector2(0.92f, 0.38f);
             buttonRT.offsetMin = Vector2.zero;
             buttonRT.offsetMax = Vector2.zero;
 
             Image btnImage = buttonGO.GetComponent<Image>();
             if (btnImage == null) btnImage = buttonGO.AddComponent<Image>();
-            btnImage.color = new Color(0.18f, 0.55f, 0.34f, 1f); // Forest green
+            btnImage.color = new Color(0.18f, 0.60f, 0.36f, 1f); // Vibrant emerald green
 
             Button btn = buttonGO.GetComponent<Button>();
             if (btn == null) btn = buttonGO.AddComponent<Button>();
@@ -242,8 +245,8 @@ public static class Step8_SetupShopCartSystem
 
             ColorBlock cb = btn.colors;
             cb.normalColor = Color.white;
-            cb.highlightedColor = new Color(1.2f, 1.2f, 1.2f, 1f);
-            cb.pressedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+            cb.highlightedColor = new Color(1.15f, 1.15f, 1.15f, 1f);
+            cb.pressedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
             btn.colors = cb;
 
             // Button Label Text
@@ -264,14 +267,19 @@ public static class Step8_SetupShopCartSystem
             if (btnTextRT == null) btnTextRT = btnTextGO.AddComponent<RectTransform>();
             btnTextRT.anchorMin = Vector2.zero;
             btnTextRT.anchorMax = Vector2.one;
-            btnTextRT.offsetMin = Vector2.zero;
-            btnTextRT.offsetMax = Vector2.zero;
+            btnTextRT.offsetMin = new Vector2(10f, 4f);
+            btnTextRT.offsetMax = new Vector2(-10f, -4f);
 
             TextMeshProUGUI tmpText = btnTextGO.GetComponent<TextMeshProUGUI>();
             if (tmpText == null) tmpText = btnTextGO.AddComponent<TextMeshProUGUI>();
             tmpText.text = "Add to Cart";
-            tmpText.fontSize = 13f;
+            tmpText.fontSize = 20f;
             tmpText.fontStyle = FontStyles.Bold;
+            tmpText.enableAutoSizing = true;
+            tmpText.fontSizeMin = 14f;
+            tmpText.fontSizeMax = 20f;
+            tmpText.textWrappingMode = TextWrappingModes.NoWrap;
+            tmpText.overflowMode = TextOverflowModes.Ellipsis;
             tmpText.alignment = TextAlignmentOptions.Center;
             tmpText.color = Color.white;
             tmpText.raycastTarget = false;

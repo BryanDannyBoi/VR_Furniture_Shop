@@ -30,8 +30,11 @@ public class InteractiveDoor : MonoBehaviour
     [Tooltip("Text component showing the interaction prompt.")]
     [SerializeField] private TextMeshProUGUI m_PromptText;
 
+    [Tooltip("Optional Button component for direct UI click opening.")]
+    [SerializeField] private UnityEngine.UI.Button m_OpenButton;
+
     [Tooltip("Default prompt message.")]
-    [SerializeField] private string m_PromptMessage = "Open [Ray Select]";
+    [SerializeField] private string m_PromptMessage = "Open Door [Click]";
 
     [Header("Interaction")]
     [SerializeField] private XRSimpleInteractable m_Interactable;
@@ -50,26 +53,63 @@ public class InteractiveDoor : MonoBehaviour
         m_ClosedRotation = m_HingeTransform.localRotation;
         m_TargetOpenRotation = m_ClosedRotation * Quaternion.Euler(0f, m_OpenAngle, 0f);
 
+        // Keep prompt canvas visible so player can always see the button to open the door
         if (m_PromptCanvas != null)
-            m_PromptCanvas.gameObject.SetActive(false);
+            m_PromptCanvas.gameObject.SetActive(true);
 
         if (m_PromptText != null)
             m_PromptText.text = m_PromptMessage;
 
+        // Auto-find Button in door root if not assigned
+        Transform doorRoot = transform.parent != null ? transform.parent : transform;
+        if (m_OpenButton == null)
+            m_OpenButton = doorRoot.GetComponentInChildren<UnityEngine.UI.Button>(true);
+
+        if (m_OpenButton != null)
+        {
+            m_OpenButton.onClick.AddListener(OpenDoor);
+        }
+
+        // Support all buttons under door hierarchy (e.g. front and back face buttons)
+        var allButtons = doorRoot.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+        foreach (var b in allButtons)
+        {
+            if (b != m_OpenButton)
+            {
+                b.onClick.AddListener(OpenDoor);
+            }
+        }
+
         if (m_Interactable == null)
-            m_Interactable = GetComponentInChildren<XRSimpleInteractable>();
+            m_Interactable = doorRoot.GetComponentInChildren<XRSimpleInteractable>(true);
 
         if (m_Interactable != null)
         {
+            // Support both Grip (Select) and Trigger (Activate)
             m_Interactable.selectEntered.AddListener(OnSelectEntered);
+            m_Interactable.activated.AddListener(OnActivated);
         }
     }
 
     private void OnDestroy()
     {
+        if (m_OpenButton != null)
+        {
+            m_OpenButton.onClick.RemoveListener(OpenDoor);
+        }
+
         if (m_Interactable != null)
         {
             m_Interactable.selectEntered.RemoveListener(OnSelectEntered);
+            m_Interactable.activated.RemoveListener(OnActivated);
+        }
+    }
+
+    private void OnActivated(ActivateEventArgs args)
+    {
+        if (!m_IsOpen && !m_IsAnimating)
+        {
+            OpenDoor();
         }
     }
 
@@ -151,5 +191,17 @@ public class InteractiveDoor : MonoBehaviour
 
         if (m_Interactable != null)
             m_Interactable.enabled = false;
+
+        // Disable door panel colliders so the opening is 100% physically clear to walk/teleport through
+        var doorColliders = m_HingeTransform.GetComponentsInChildren<Collider>();
+        foreach (var c in doorColliders)
+        {
+            c.enabled = false;
+        }
+
+        // Disable trigger zone collider so rays pass through smoothly
+        var triggerCol = GetComponent<Collider>();
+        if (triggerCol != null)
+            triggerCol.enabled = false;
     }
 }

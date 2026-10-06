@@ -169,6 +169,15 @@ public class StationCartButton : MonoBehaviour
 
         if (m_LabelText == null)
             m_LabelText = GetComponentInChildren<TextMeshProUGUI>();
+
+        if (m_LabelText != null)
+        {
+            m_LabelText.enableAutoSizing = true;
+            m_LabelText.fontSizeMin = 14f;
+            m_LabelText.fontSizeMax = 22f;
+            m_LabelText.textWrappingMode = TextWrappingModes.NoWrap;
+            m_LabelText.alignment = TextAlignmentOptions.Center;
+        }
     }
 
     private void Start()
