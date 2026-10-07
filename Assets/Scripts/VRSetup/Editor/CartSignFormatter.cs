@@ -60,7 +60,7 @@ public static class CartSignFormatter
                 Transform child = st.transform.GetChild(i);
                 if (child.name.StartsWith("MiniFridge_") || child.name.StartsWith("Preview_MiniFridge"))
                 {
-                    child.localScale = new Vector3(5f, 5f, 10f);
+                    child.localScale = new Vector3(7f, 10f, 7f);
                     EditorUtility.SetDirty(child.gameObject);
                 }
             }
