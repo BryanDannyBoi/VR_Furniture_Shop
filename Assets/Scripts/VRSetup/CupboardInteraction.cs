@@ -56,6 +56,17 @@ public class CupboardInteraction : MonoBehaviour
     private void Awake()
     {
         m_Interactable = GetComponent<XRSimpleInteractable>();
+        if (m_Interactable != null)
+        {
+            m_Interactable.interactionLayers = 1; // Default ray layer
+            Collider[] allCols = GetComponentsInChildren<Collider>();
+            foreach (Collider c in allCols)
+            {
+                if (!m_Interactable.colliders.Contains(c))
+                    m_Interactable.colliders.Add(c);
+            }
+        }
+
         m_InitialRotation = transform.rotation;
 
         // Cache all child renderers and their material properties

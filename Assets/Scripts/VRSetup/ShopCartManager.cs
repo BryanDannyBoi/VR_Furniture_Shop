@@ -186,6 +186,10 @@ public class StationCartButton : MonoBehaviour
         {
             m_Button.onClick.AddListener(OnButtonClicked);
         }
+        if (ShopCartManager.Instance != null)
+        {
+            ShopCartManager.Instance.OnCartUpdated += OnCartStateChanged;
+        }
         UpdateButtonVisuals();
     }
 
@@ -195,6 +199,15 @@ public class StationCartButton : MonoBehaviour
         {
             m_Button.onClick.RemoveListener(OnButtonClicked);
         }
+        if (ShopCartManager.Instance != null)
+        {
+            ShopCartManager.Instance.OnCartUpdated -= OnCartStateChanged;
+        }
+    }
+
+    private void OnCartStateChanged(float total)
+    {
+        UpdateButtonVisuals();
     }
 
     /// <summary>

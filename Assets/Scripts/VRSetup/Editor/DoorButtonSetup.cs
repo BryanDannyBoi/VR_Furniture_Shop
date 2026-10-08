@@ -49,7 +49,7 @@ public static class DoorButtonSetup
 
         Camera mainCam = Camera.main;
 
-        string[] doorNames = { "Entrance_Door_Room1", "Door_To_MiniFridges", "Door_To_Lamps" };
+        string[] doorNames = { "Entrance_Door_Room1", "Door_To_MiniFridges", "Door_To_Lamps", "Door_To_Bedroom" };
         int configuredCount = 0;
 
         foreach (string dName in doorNames)

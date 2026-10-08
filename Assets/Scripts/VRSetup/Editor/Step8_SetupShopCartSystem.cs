@@ -49,10 +49,10 @@ public static class Step8_SetupShopCartSystem
         new StationData("Station_05", "Elegant Purple Wood", 550f),
     };
 
-    // Right-side sign placement relative to each station origin
-    // Position: +1.05m to the right, 0.85m height (chest level), -0.30m forward (angled toward player)
-    private static readonly Vector3 SIGN_LOCAL_POS = new Vector3(1.05f, 0.85f, -0.30f);
-    private static readonly Quaternion SIGN_LOCAL_ROT = Quaternion.Euler(0f, -15f, 0f);
+    // Top sign placement relative to each cupboard station origin
+    // Position: 0m centered, 1.95m height (on top of cupboard), -0.05m forward
+    private static readonly Vector3 SIGN_LOCAL_POS = new Vector3(0f, 1.95f, -0.05f);
+    private static readonly Quaternion SIGN_LOCAL_ROT = Quaternion.identity;
     private const float SIGN_WIDTH = 440f;
     private const float SIGN_HEIGHT = 280f;
     private const float SIGN_SCALE = 0.001f;
@@ -139,11 +139,16 @@ public static class Step8_SetupShopCartSystem
                 continue;
             }
 
-            // Remove any legacy CartButton_Canvas if it exists from earlier tests
+            // Remove any legacy CartButton_Canvas or Label_Canvas if it exists
             Transform oldCanvas = station.transform.Find("CartButton_Canvas");
             if (oldCanvas != null)
             {
                 Undo.DestroyObjectImmediate(oldCanvas.gameObject);
+            }
+            Transform oldLabel = station.transform.Find("Label_Canvas");
+            if (oldLabel != null)
+            {
+                Undo.DestroyObjectImmediate(oldLabel.gameObject);
             }
 
             // Find or create Cart_Sign child

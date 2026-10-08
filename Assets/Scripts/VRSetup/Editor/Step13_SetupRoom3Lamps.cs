@@ -332,55 +332,21 @@ public static class Step13_SetupRoom3Lamps
             anchorComp.matchOrientation = MatchOrientation.TargetUpAndForward;
             anchorComp.interactionLayers = 1 << 31; // Teleport layer
 
-            // 4. Station Label Canvas: exactly "Name - $Price"
-            SetupStationLabel(station, data.displayName, data.price, mainCam);
+            // 4. Remove any redundant Label_Canvas if present
+            Transform oldLabel = station.transform.Find("Label_Canvas");
+            if (oldLabel != null) Undo.DestroyObjectImmediate(oldLabel.gameObject);
 
-            // 5. Add to Cart Sign & Button
+            // 5. Add to Cart Sign & Button on top of lamp
             SetupStationCartSign(station, data.displayName, data.price, signBoardMat, mainCam);
         }
-    }
-
-    private static void SetupStationLabel(GameObject station, string name, float price, Camera mainCam)
-    {
-        GameObject canvasGO = new GameObject("Label_Canvas");
-        canvasGO.transform.SetParent(station.transform, false);
-        canvasGO.transform.localPosition = new Vector3(0f, 1.8f, 0f);
-        canvasGO.transform.localRotation = Quaternion.Euler(0f, 180f, 0f); // Facing player at -Z
-        canvasGO.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-
-        Canvas canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.WorldSpace;
-        if (mainCam != null) canvas.worldCamera = mainCam;
-
-        canvasGO.AddComponent<TrackedDeviceGraphicRaycaster>();
-
-        RectTransform rt = canvasGO.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(100f, 30f);
-
-        GameObject textGO = new GameObject("LabelText");
-        textGO.transform.SetParent(canvasGO.transform, false);
-
-        TextMeshProUGUI tmp = textGO.AddComponent<TextMeshProUGUI>();
-        tmp.text = $"{name} - ${price:F0}";
-        tmp.fontSize = 18f;
-        tmp.alignment = TextAlignmentOptions.Center;
-        tmp.color = Color.white;
-        tmp.enableAutoSizing = true;
-        tmp.fontSizeMin = 8f;
-        tmp.fontSizeMax = 20f;
-
-        RectTransform textRt = textGO.GetComponent<RectTransform>();
-        textRt.anchorMin = Vector2.zero;
-        textRt.anchorMax = Vector2.one;
-        textRt.sizeDelta = Vector2.zero;
     }
 
     private static void SetupStationCartSign(GameObject station, string itemName, float price, Material signBoardMat, Camera mainCam)
     {
         GameObject signGO = new GameObject("Cart_Sign");
         signGO.transform.SetParent(station.transform, false);
-        signGO.transform.localPosition = new Vector3(0.55f, 0.85f, -0.30f); // Right side angled towards player
-        signGO.transform.localRotation = Quaternion.Euler(0f, -15f, 0f);
+        signGO.transform.localPosition = new Vector3(0f, 1.05f, 0f); // Directly on top of lamp
+        signGO.transform.localRotation = Quaternion.identity;
 
         // Sign Board physical backing
         GameObject boardGO = GameObject.CreatePrimitive(PrimitiveType.Cube);

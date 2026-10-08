@@ -72,33 +72,28 @@ public static class FixDoorwayPassage
         }
 
         // --------------------------------------------------------
-        // 2. Enable TeleportationArea on Room 1 Floor and Room 2 Floor
+        // 2. Enable TeleportationArea on all floors (Rooms 1, 2, 3, 4)
         // --------------------------------------------------------
-        GameObject floor1 = GameObject.Find("Floor");
-        if (floor1 != null)
+        string[] floorNames = { "Floor", "Room_2_Floor", "Room_3_Floor", "Room_4_Floor" };
+        foreach (string flName in floorNames)
         {
-            TeleportationArea area = floor1.GetComponent<TeleportationArea>();
-            if (area == null) area = Undo.AddComponent<TeleportationArea>(floor1);
-            area.interactionLayers = 1 << 31; // Teleport layer
-            EditorUtility.SetDirty(floor1);
-            fixCount++;
-        }
-
-        GameObject floor2 = GameObject.Find("Room_2_Floor");
-        if (floor2 != null)
-        {
-            TeleportationArea area = floor2.GetComponent<TeleportationArea>();
-            if (area == null) area = Undo.AddComponent<TeleportationArea>(floor2);
-            area.interactionLayers = 1 << 31; // Teleport layer
-            EditorUtility.SetDirty(floor2);
-            fixCount++;
+            GameObject fl = GameObject.Find(flName);
+            if (fl != null)
+            {
+                TeleportationArea area = fl.GetComponent<TeleportationArea>();
+                if (area == null) area = Undo.AddComponent<TeleportationArea>(fl);
+                area.interactionLayers = 1 << 31; // Teleport layer
+                EditorUtility.SetDirty(fl);
+                fixCount++;
+            }
         }
 
         // --------------------------------------------------------
-        // 3. Add Doorway Teleportation Anchors in thresholds
+        // 3. Add Doorway Teleportation Anchors in all door thresholds
         // --------------------------------------------------------
         SetupDoorwayAnchor("Doorway_Anchor_Room1_To_Room2", new Vector3(10.11f, -0.5f, -1.50f), Quaternion.Euler(0f, 90f, 0f));
         SetupDoorwayAnchor("Doorway_Anchor_Room2_To_Room3", new Vector3(18.11f, -0.5f, -1.50f), Quaternion.Euler(0f, 90f, 0f));
+        SetupDoorwayAnchor("Doorway_Anchor_Room3_To_Room4", new Vector3(26.11f, -0.5f, -1.50f), Quaternion.Euler(0f, 90f, 0f));
 
         // --------------------------------------------------------
         // 4. Ensure solid Back wall is inactive
@@ -125,14 +120,18 @@ public static class FixDoorwayPassage
             fixCount++;
         }
 
-        GameObject lintel2 = GameObject.Find("EastWall_Segment_Lintel");
-        if (lintel2 != null)
+        // Find all EastWall_Segment_Lintel instances (Room 2 and Room 3)
+        GameObject[] allLintels = Resources.FindObjectsOfTypeAll<GameObject>();
+        foreach (var go in allLintels)
         {
-            Undo.RecordObject(lintel2.transform, "Raise Lintel 2");
-            lintel2.transform.position = new Vector3(18.11f, 1.95f, -1.50f);
-            lintel2.transform.localScale = new Vector3(0.20f, 0.10f, 0.88f);
-            EditorUtility.SetDirty(lintel2);
-            fixCount++;
+            if (go.name == "EastWall_Segment_Lintel" && go.scene.isLoaded)
+            {
+                Undo.RecordObject(go.transform, "Raise East Lintel");
+                go.transform.position = new Vector3(go.transform.position.x, 1.95f, -1.50f);
+                go.transform.localScale = new Vector3(0.20f, 0.10f, 0.88f);
+                EditorUtility.SetDirty(go);
+                fixCount++;
+            }
         }
 
         EditorSceneManager.MarkSceneDirty(scene);
